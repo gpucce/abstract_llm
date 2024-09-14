@@ -6,7 +6,7 @@
 #SBATCH --gpus-per-task=4
 #SBATCH --time=0-12:00:00
 #SBATCH --partition=boost_usr_prod
-#SBATCH --account=IscrC_TRAVEL
+#SBATCH --account=IscrC_DIFD
 #SBATCH --job-name=generate_llama3.1_405b
 #SBATCH --output=slurm_logs/llm_llama3_sender-%j.out
 
