@@ -14,14 +14,12 @@ def fix_record(x):
                 _x = _x.split(sep)[0]
                 break
 
-        _x = [j.strip() for j in re.split("\d\.|•|\*|- ", _x)]
+        _x = [j.strip() for j in re.split(r"\d\.|•|\*|- ", _x)]
         _x = _x if len(_x[0].split()) == 1 else _x[1:]
         x["list"] = _x
     except:
         x["list"] = None
 
-    if not isinstance(x["list"], list):
-        x["list"] = None
     return x
 
 def compute_spec(x):
@@ -30,52 +28,63 @@ def compute_spec(x):
     if len(ss) == 0:
         return 0
     ss = ss[0]
+
     spec = len(list(ss.closure(hypernym_closure)))
     if spec == 0:
         ss = ss.instance_hypernyms()
         if not len(ss) == 0:
             ss = ss[0]
             spec = len(list(ss.closure(hypernym_closure)))
+
     spec = float(5 *  spec) / float(20)
     return spec
 
 def compute_corr(x):
-    x = x[:x.index(0)] if 0 in x else x
-    _idxs = list(range(len(x)))
-    _idxs = [i for i,j in zip(_idxs, x) if j > 0]
-    _x = [i for i in x if i > 0]
-    try:
-        return pearsonr(_idxs, _x)[0]
-    except:
-        return None
+    _x = x
+    # old version removing 
+    # _x = x[:x.index(0)] if 0 in x else x
+    _idxs = [i for i, j in enumerate(_x) if j > 0]
+    _x = [i for i in _x if i > 0]
+    corr = None
+    if len(_x) > 0 and len(set(_x)) > 1:
+        corr = pearsonr(_idxs, _x)[0]
+    return corr, _idxs
 
 def normalize_score(x, _min, _max):
     return ((x - _min) / (_max - _min)) * (5.0 - 1.0) + 1.0
 
 if __name__ == "__main__":
 
-    _files = os.listdir("./gen_1")
+    import sys
+    _data_path = sys.argv[1]
+
+    _files = os.listdir(_data_path)
     _files = [_file for _file in _files if "405" in _file]
 
     for _file in tqdm(_files):
-        with open("gen_1/" + _file) as jf:
+        with open(_data_path + "/" + _file) as jf:
             out = [json.loads(i) for i in jf.readlines()]
 
-        out = [fix_record(i) for i in tqdm(out)]
-        out = [i for i in out if i["list"] is not None]
+        out = [fix_record(i) for i in tqdm(out, desc="fix record")]
 
         for i in out:
+            i["list_spec"] = None
             if i["list"] is not None:
                 i["list_spec"] = [compute_spec(j) for j in i["list"] if j is not None]
-            else:
-                i["list_spec"] = None
 
         for i in out:
+            corr, _idxs = None, None
             if i["list_spec"] is not None:
-                i["list_spec_corr"] = compute_corr(i["list_spec"])
-            else:
-                i["list_spec_corr"] = None
+                corr, _idxs = compute_corr(i["list_spec"])
+            i.update({"list_spec_corr": corr, "idxs":_idxs})
 
-        with open("processed_gen_1/" + _file, "w") as jf:
+        for i in out:
+            i["token_spec"] = None
+            if i["list"] is not None and i["list_spec"] is not None and i["token"] in i["list"]:
+                i["token_spec"] = i["list_spec"][i["list"].index(i["token"])]
+
+        if not os.path.exists("processed_" + _data_path + "/"):
+            os.makedirs("processed_" + _data_path + "/")
+        with open("processed_" + _data_path + "/" + _file, "w") as jf:
             for i in out:
                 jf.write(json.dumps(i) + "\n")
