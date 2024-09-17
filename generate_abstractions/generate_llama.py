@@ -98,7 +98,8 @@ if __name__ == "__main__":
 
     llm, params = get_vllm_llm_and_params(model_path, model_path)
 
-    os.mkdir("gender_prompts")
+    if not os.path.exists("gender_prompts"):
+        os.mkdir("gender_prompts")
 
     for prompts in all_prompts:
         sys_prompt = prompts[0][0]["content"]
