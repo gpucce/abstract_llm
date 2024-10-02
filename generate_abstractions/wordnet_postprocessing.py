@@ -8,11 +8,10 @@ from scipy.stats import pearsonr
 def fix_record(x):
     try:
         _x = x["generated_text"].lower()
-        seps = ["in this list", "this list"]
+        seps = ["in this list", "this list", "however", "here's a brief", "note:", "note that"]
         for sep in seps:
             if sep in _x.lower():
                 _x = _x.split(sep)[0]
-                break
 
         _x = [j.strip() for j in re.split(r"\d\.|•|\*|- ", _x)]
         _x = _x if len(_x[0].split()) == 1 else _x[1:]
@@ -60,6 +59,8 @@ if __name__ == "__main__":
 
     _files = os.listdir(_data_path)
     _files = [_file for _file in _files if "405" in _file]
+
+    _files = [_file for _file in _files if "linguist" in _file or " 3 " in _file or "30" in _file]
 
     for _file in tqdm(_files):
         with open(_data_path + "/" + _file) as jf:
