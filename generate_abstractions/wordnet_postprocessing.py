@@ -60,8 +60,6 @@ if __name__ == "__main__":
     _files = os.listdir(_data_path)
     _files = [_file for _file in _files if "405" in _file]
 
-    _files = [_file for _file in _files if "linguist" in _file or " 3 " in _file or "30" in _file]
-
     for _file in tqdm(_files):
         with open(_data_path + "/" + _file) as jf:
             out = [json.loads(i) for i in jf.readlines()]
