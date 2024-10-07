@@ -76,7 +76,6 @@ def postprocess_text(text):
         text = re.sub(r"\s+", " ", text)
     except:
         pass
-    
     return text
 
 if __name__ == "__main__":
@@ -99,6 +98,9 @@ if __name__ == "__main__":
 
     llm, params = get_vllm_llm_and_params(model_path, model_path)
 
+    if not os.path.exists("gender_prompts"):
+        os.mkdir("gender_prompts")
+
     for prompts in all_prompts:
         sys_prompt = prompts[0][0]["content"]
         prompts = prepare_inputs(prompts, llm)
@@ -108,7 +110,7 @@ if __name__ == "__main__":
         prompts = []
         outputs = []
         count = 0
-        with open(f"generation_output_{_model_name}_{sys_prompt}.jsonl", "w") as jf:
+        with open(f"gender_prompts/generation_output_{_model_name}_{sys_prompt}.jsonl", "w") as jf:
             for output, message in zip(output_text, messages):
                 count += 1
                 prompt = output.prompt
