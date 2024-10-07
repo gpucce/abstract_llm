@@ -197,7 +197,7 @@ def _rename_no_age(i):
             new_i += "_"
             new_i += gend
             break
-    return new_i
+    return new_i.capitalize()
 
 def _rename_age(i):
     ids = [str(i) for i in [3, 5, 8, 12, 15, 18, 20, 22, 25, 30, 40, 50, 60, 70][::-1]]
