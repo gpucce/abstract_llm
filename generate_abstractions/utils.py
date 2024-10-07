@@ -38,7 +38,7 @@ SYSTEM_PROMPTS= {
         "You are a female teenager of 18 years old learning in college.",
         "You are a young woman of 22 years old learning in university.",
         "You are a young woman of 25 years old learning in graduate school.",
-        "You are a young womnan of 30 years old learning in a professional setting.",
+        "You are a young woman of 30 years old learning in a professional setting.",
         "You are a middle-aged woman of 40 years old learning in a professional setting.",
         "You are a middle-aged woman of 50 years old working in a professional setting.",
         "You are a middle-aged woman of 60 years old working in a professional setting.",
@@ -202,7 +202,7 @@ def _rename_no_age(i):
 def _rename_age(i):
     ids = [str(i) for i in [3, 5, 8, 12, 15, 18, 20, 22, 25, 30, 40, 50, 60, 70][::-1]]
     male_attrs = ["male", "boy", "man"]
-    female_attrs = ["female", "girl", "woman"]
+    female_attrs = ["female", "girl", "woman", "womnan"]
     new_i = ""
     for id in ids:
         if id in i:
@@ -211,15 +211,13 @@ def _rename_age(i):
     found = False
     for gend in female_attrs:
         if gend in i:
-            new_i += "_"
-            new_i += "female"
+            new_i += " female"
             found = True
             break
     if not found:
         for gend in male_attrs:
             if gend in i:
-                new_i += "_"
-                new_i += "male"
+                new_i += " male"
                 break
 
     return new_i
