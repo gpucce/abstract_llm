@@ -115,7 +115,7 @@ def get_closure_size(word):
 
 def get_bubble_plot(_plot_data, size_factor=500):
     plot_data = _plot_data.to_numpy()
-    fig, ax = plt.subplots(1,1, figsize=(10, 10), dpi=150)
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10), dpi=300)
 
     # Get the dimensions of the data
     rows, cols = plot_data.shape
@@ -132,7 +132,7 @@ def get_bubble_plot(_plot_data, size_factor=500):
 
     # Create a scatter plot with bubbles
     # plt.figure(figsize=(8, 8))
-    scatter = ax.scatter(X, Y, s=sizes, c=plot_data.flatten(), cmap='viridis', alpha=0.6)
+    scatter = ax.scatter(X, Y, s=sizes, c=plot_data.flatten(), cmap='viridis_r', alpha=0.6)
 
     # Reverse the y-axis to match heatmap orientation
     ax.invert_yaxis()
